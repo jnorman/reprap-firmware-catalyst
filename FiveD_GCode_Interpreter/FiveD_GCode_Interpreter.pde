@@ -13,6 +13,7 @@
     - re-enabled 3D gcode support
     - added auto-shutdown on idle
     - added base heater command
+    -06.14.2010 jnf thermistorTable.h changed to  EPCOS 100K Thermistor (B57540G0104F000) from; http://reprap.org/wiki/Thermistor
 */
 
 
