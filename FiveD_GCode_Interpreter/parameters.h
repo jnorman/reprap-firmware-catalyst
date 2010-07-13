@@ -33,17 +33,17 @@
 #define INCHES_TO_MM 25.4
 
 // define the parameters of our machine.
-#define X_STEPS_PER_MM   20
+#define X_STEPS_PER_MM   160
 #define X_STEPS_PER_INCH (X_STEPS_PER_MM*INCHES_TO_MM)
 #define X_MOTOR_STEPS    200
 #define INVERT_X_DIR 1
 
-#define Y_STEPS_PER_MM   20
+#define Y_STEPS_PER_MM   160
 #define Y_STEPS_PER_INCH (Y_STEPS_PER_MM*INCHES_TO_MM)
 #define Y_MOTOR_STEPS    200
 #define INVERT_Y_DIR 1
 
-#define Z_STEPS_PER_MM   20 // 200 steps per revoloution / 1.25 mm thread pitch
+#define Z_STEPS_PER_MM   160 // about 200 steps per revoloution / 1.25 mm thread pitch
 #define Z_STEPS_PER_INCH (Z_STEPS_PER_MM*INCHES_TO_MM)
 #define Z_MOTOR_STEPS    200
 #define INVERT_Z_DIR 1
@@ -57,14 +57,14 @@
 #define E_MOTOR_STEPS    400 //half-step
 
 //our maximum feedrates
-#define FAST_XY_FEEDRATE 3000.0
+#define FAST_XY_FEEDRATE 300.0
 #define FAST_Z_FEEDRATE  50.0
 
 // Data for acceleration calculations
 // Comment out the next line to turn accelerations off
-//#define ACCELERATION_ON
-#define SLOW_XY_FEEDRATE 1000.0 // Speed from which to start accelerating
-#define SLOW_Z_FEEDRATE 20
+#define ACCELERATION_ON
+#define SLOW_XY_FEEDRATE 100.0 // Speed from which to start accelerating
+#define SLOW_Z_FEEDRATE 15
 
 // Set to 1 if enable pins are inverting
 // For RepRap stepper boards version 1.x the enable pins are *not* inverting.
