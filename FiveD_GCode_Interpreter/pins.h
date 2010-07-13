@@ -232,7 +232,7 @@
 //extruder pins
 #define EXTRUDER_0_MOTOR_SPEED_PIN   (byte)8
 #define EXTRUDER_0_MOTOR_DIR_PIN     (byte)9
-#define EXTRUDER_0_HEATER_PIN        (byte)13
+#define EXTRUDER_0_HEATER_PIN        (byte)12
 #define EXTRUDER_0_FAN_PIN           (byte)-1
 #define EXTRUDER_0_TEMPERATURE_PIN  (byte)0   // Analogue input
 #define EXTRUDER_0_VALVE_DIR_PIN     (byte)-1
