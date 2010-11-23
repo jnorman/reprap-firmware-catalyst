@@ -1,0 +1,16 @@
+reprap-firmware-catalyst
+
+  This is a fork of Reprap FiveD Gcode Firmware
+  License: GPL
+  
+no heated bed... right now
+no different motherboards
+no extruder controller support
+one stepper extruder
+thermistor sensor
+Five dimensional
+simpler?
+more readable
+remix to work on a single arduino with atmega 328p
+
+I hope to be updating to work with reprap host post 20100806 soon. Presently I'm using reprap 20100713 nightly build, just because that's what I had.

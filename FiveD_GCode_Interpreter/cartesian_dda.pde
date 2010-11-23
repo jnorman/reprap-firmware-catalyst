@@ -41,11 +41,10 @@ cartesian_dda::cartesian_dda()
 	pinMode(Z_STEP_PIN, OUTPUT);
 	pinMode(Z_DIR_PIN, OUTPUT);
 
-#if MOTHERBOARD > 0
+
 	pinMode(X_ENABLE_PIN, OUTPUT);
 	pinMode(Y_ENABLE_PIN, OUTPUT);
 	pinMode(Z_ENABLE_PIN, OUTPUT);
-#endif
 
   //turn the motors off at the start.
 
@@ -105,10 +104,10 @@ void cartesian_dda::set_target(const FloatPoint& p)
         FloatPoint squares = delta_position*delta_position;
         distance = squares.x + squares.y + squares.z;
         // If we are 0, only thing changing is e
-        if(distance <= 0.0)
+        if(distance < SMALL_DISTANCE2)
           distance = squares.e;
         // If we are still 0, only thing changing is f
-        if(distance <= 0.0)
+        if(distance < SMALL_DISTANCE2)
           distance = squares.f;
         distance = sqrt(distance);          
                                                                                    			
@@ -175,6 +174,8 @@ void cartesian_dda::set_target(const FloatPoint& p)
         dda_counter.f = dda_counter.x;
   
         where_i_am = p;
+
+        //sprintf(debugstring, "%d %d %d", (int)current_steps.e, (int)target_steps.e, (int)delta_steps.e);
         
         return;        
 }
@@ -285,10 +286,7 @@ void cartesian_dda::dda_step()
   
                 if(real_move)
                 {
-                  if(t_scale > 1)
-                    timestep = t_scale*current_steps.f;
-                  else
-                    timestep = current_steps.f;
+                  timestep = t_scale*current_steps.f;
                   timestep = calculate_feedrate_delay((float) timestep);
                   setTimer(timestep);
                 }
@@ -388,11 +386,9 @@ bool cartesian_dda::can_step(byte min_pin, byte max_pin, long current, long targ
 }
 
 
-
-
 void cartesian_dda::enable_steppers()
 {
-#if MOTHERBOARD > 0
+
  if(delta_steps.x)
     digitalWrite(X_ENABLE_PIN, ENABLE_ON);
   if(delta_steps.y)    
@@ -401,14 +397,13 @@ void cartesian_dda::enable_steppers()
     digitalWrite(Z_ENABLE_PIN, ENABLE_ON);
   if(delta_steps.e)
     ex[extruder_in_use]->enableStep();
-#endif  
+ 
 }
 
 
 
 void cartesian_dda::disable_steppers()
 {
-#if MOTHERBOARD > 0
 	//disable our steppers
 	digitalWrite(X_ENABLE_PIN, !ENABLE_ON);
 	digitalWrite(Y_ENABLE_PIN, !ENABLE_ON);
@@ -418,55 +413,4 @@ void cartesian_dda::disable_steppers()
         // turn the motor the wrong way.  Leave it on.
         
         //ex[extruder_in_use]->->disableStep();       
-#endif
 }
-
-/*
-
-void cartesian_dda::delayMicrosecondsInterruptible(unsigned int us)
-{
-
-#if F_CPU >= 16000000L
-    // for the 16 MHz clock on most Arduino boards
-
-	// for a one-microsecond delay, simply return.  the overhead
-	// of the function call yields a delay of approximately 1 1/8 us.
-	if (--us == 0)
-		return;
-
-	// the following loop takes a quarter of a microsecond (4 cycles)
-	// per iteration, so execute it four times for each microsecond of
-	// delay requested.
-	us <<= 2;
-
-	// account for the time taken in the preceeding commands.
-	us -= 2;
-#else
-    // for the 8 MHz internal clock on the ATmega168
-
-    // for a one- or two-microsecond delay, simply return.  the overhead of
-    // the function calls takes more than two microseconds.  can't just
-    // subtract two, since us is unsigned; we'd overflow.
-	if (--us == 0)
-		return;
-	if (--us == 0)
-		return;
-
-	// the following loop takes half of a microsecond (4 cycles)
-	// per iteration, so execute it twice for each microsecond of
-	// delay requested.
-	us <<= 1;
-    
-    // partially compensate for the time taken by the preceeding commands.
-    // we can't subtract any more than this or we'd overflow w/ small delays.
-    us--;
-#endif
-
-
-	// busy wait
-	__asm__ __volatile__ (
-		"1: sbiw %0,1" "\n\t" // 2 cycles
-		"brne 1b" : "=w" (us) : "0" (us) // 2 cycles
-	);
-}
-*/

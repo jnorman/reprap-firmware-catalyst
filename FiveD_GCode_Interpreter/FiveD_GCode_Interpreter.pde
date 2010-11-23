@@ -4,16 +4,14 @@
   This is a fork of Repraps FiveD Gcode Firmware
   License: GPL
   
-  Changes from official firmware:
-    - added support for Arduino Mega
-    - added support fo Arudino Duemilanove w/ ATMega328P
-    - changed determination of using the extruder controller from MOTHERBOARD > 1 to USE_EXTRUDER_CONTROLLER 
-    - fixed some bugs checking unsigned byte < 0 ...
-    - updated interrupt function SIGNAL -> ISR
-    - re-enabled 3D gcode support
-    - added auto-shutdown on idle
-    - added base heater command
-    -06.14.2010 jnf thermistorTable.h changed to  EPCOS 100K Thermistor (B57540G0104F000) from; http://reprap.org/wiki/Thermistor
+no heated bed... right now
+no different motherboards
+no extruder controller support
+one stepper extruder
+thermistor sensor
+Five dimensional
+simpler
+more readable
 */
 
 
@@ -22,7 +20,6 @@
 #include "WProgram.h"
 #include "vectors.h"
 #include "parameters.h"
-#include "intercom.h"
 #include "pins.h"
 #include "extruder.h"
 #include "cartesian_dda.h"
@@ -36,34 +33,10 @@ byte extruder_in_use = 0;
 // along with the next G Code acknowledgement.
 char debugstring[10];
 
-#if USE_EXTRUDER_CONTROLLER == false
-
-// TODO: For some reason, if you declare the following two in the order ex0 ex1 then
-// ex0 won't drive its stepper.  They seem fine this way round though.  But that's got
-// to be a bug.
-
-#if EXTRUDER_COUNT == 2            
-static extruder ex1(EXTRUDER_1_MOTOR_DIR_PIN, EXTRUDER_1_MOTOR_SPEED_PIN , EXTRUDER_1_HEATER_PIN,
-              EXTRUDER_1_FAN_PIN,  EXTRUDER_1_TEMPERATURE_PIN, EXTRUDER_1_VALVE_DIR_PIN,
-              EXTRUDER_1_VALVE_ENABLE_PIN, EXTRUDER_1_STEP_ENABLE_PIN);            
-#endif
-
 static extruder ex0(EXTRUDER_0_MOTOR_DIR_PIN, EXTRUDER_0_MOTOR_SPEED_PIN , EXTRUDER_0_HEATER_PIN,
             EXTRUDER_0_FAN_PIN,  EXTRUDER_0_TEMPERATURE_PIN, EXTRUDER_0_VALVE_DIR_PIN,
             EXTRUDER_0_VALVE_ENABLE_PIN, EXTRUDER_0_STEP_ENABLE_PIN);
-            
-            
-#else
 
-#if EXTRUDER_COUNT == 2    
-static extruder ex1(2);            
-#endif
-
-static extruder ex0(1);
-
-intercom talker;
-
-#endif
 
 // Each entry in the buffer is an instance of cartesian_dda.
 
@@ -80,15 +53,6 @@ volatile byte tail;
 // Where the machine is from the point of view of the command stream
 
 FloatPoint where_i_am;
-
-// Make sure each DDA knows which extruder to use
-
-//inline void setExtruder()
-//{
-//   for(byte i = 0; i < BUFFER_SIZE; i++)
-//    cdda[i]->set_extruder(ex[extruder_in_use]);
-//}
-
 
 // Our interrupt function
 
@@ -111,10 +75,6 @@ void setup()
   debugstring[0] = 0;
   
   ex[0] = &ex0;
-#if EXTRUDER_COUNT == 2  
-  ex[1] = &ex1;
-#endif  
-  extruder_in_use = 0; 
   
   head = 0;
   tail = 0;
@@ -148,32 +108,7 @@ signed long idleTimeout = 0;
 void loop()
 {
 	manage_all_extruders();
-        if (get_and_do_command())
-        {
-                if (idling)
-                {
-                        pinMode(POWER_SUPPLY_PIN, OUTPUT);
-                        digitalWrite(POWER_SUPPLY_PIN, 0);  // Set the pin to GND to turn on power supply
-                        idling = false;
-                        waitingForIdle = true;
-                }
-        }
-        else if (  (!idling) && (qEmpty()) && (ex[extruder_in_use]->get_target_temperature() < 1)  )
-        {
-                if (waitingForIdle)
-                {
-                        idleTimeout = (signed long)millis() + 10000;
-                        waitingForIdle = false;
-                }
-                else
-                {
-                        if (idleTimeout - (signed long)millis() < 0)
-                        {
-                                pinMode(POWER_SUPPLY_PIN, INPUT);    // Set the pin to floating to turn off power supply
-                                idling = true;
-                        }
-                }
-        }
+        get_and_do_command();
 }
 
 //******************************************************************************************

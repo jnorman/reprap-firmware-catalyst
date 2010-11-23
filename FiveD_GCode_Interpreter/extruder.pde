@@ -36,7 +36,6 @@ it are simple inlines in extruder.h
 Otherwise, we have to do the work ourselves...
 */
 
-#if USE_EXTRUDER_CONTROLLER == false
 extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin, byte vd_pin, byte ve_pin, signed int se_pin)
 {
          motor_dir_pin = md_pin;
@@ -68,15 +67,15 @@ extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin,
 // The step enable pin and the fan pin are the same...
 // We can have one, or the other, but not both
 
-        if(step_en_pin >= 0)
-        {
+//        if(step_en_pin >= 0)
+//        {
           pinMode(step_en_pin, OUTPUT);
-	  disableStep();
-        } else
-        {
-	  pinMode(fan_pin, OUTPUT);
-          analogWrite(fan_pin, 0);
-        }
+	  enableStep(); //disableStep();
+//        } else
+//        {
+//	  pinMode(fan_pin, OUTPUT);
+//          analogWrite(fan_pin, 0);
+//        }
 
         //these our the default values for the extruder.
         e_speed = 0;
@@ -99,6 +98,51 @@ extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin,
         set_target_temperature(target_celsius);
 }
 
+void extruder::wait_for_temperature()
+{
+  byte seconds = 0;
+  bool warming = true;
+  count = 0;
+  newT = 0;
+  oldT = newT;
+
+  while (true)
+  {
+    manage_all_extruders();
+    newT += get_temperature();
+    count++;
+    if(count > 5)
+    {
+      newT = newT/5;
+      if(newT >= target_celsius - HALF_DEAD_ZONE)
+      {
+        warming = false;
+        if(seconds > WAIT_AT_TEMPERATURE)
+          return;
+        else 
+          seconds++;
+      } 
+
+      if(warming)
+      {
+        if(newT > oldT)
+          oldT = newT;
+        else
+        {
+          // Temp isn't increasing - extruder hardware error
+          temperature_error();
+          //this is actually causing more problems when throwing up an error
+          //I'd like it to check for a second error and if found entirely stop machine
+          //return;
+        }
+      }
+
+      newT = 0;
+      count = 0;
+    }
+    delay(1000);
+  }
+}
 
 byte extruder::wait_till_hot()
 {  
@@ -163,10 +207,6 @@ void extruder::set_target_temperature(int temp)
 {
 	target_celsius = temp;
 	max_celsius = (temp*11)/10;
-
-        // If we've turned the heat off, we might as well disable the extrude stepper
-       // if(target_celsius < 1)
-        //  disableStep(); 
 }
 
 int extruder::get_target_temperature()
@@ -259,55 +299,3 @@ void extruder::manage()
         }
 }
 
-
-#if 0
-void extruder::set_speed(float sp)
-{
-  // DC motor?
-    if(step_en_pin < 0)
-    {
-      e_speed = (byte)sp;
-      if(e_speed > 0)
-          wait_for_temperature();
-      analogWrite(motor_speed_pin, e_speed);
-      return;
-    }
-      
-    // No - stepper
-  disableTimerInterrupt();
-  
-  if(sp <= 1.0e-4)
-  {
-    disableStep();
-    e_speed = 0; // Just use this as a flag
-    return;
-  } else
-  {
-    wait_for_temperature();
-    enableStep();
-    e_speed = 1;
-  }
-    
-  extrude_step_count = 0;
-  
-  float milliseconds_per_step = 60000.0/(E_STEPS_PER_MM*sp);
-  long thousand_ticks_per_step = 4*(long)(milliseconds_per_step);
-  setupTimerInterrupt();
-  setTimer(thousand_ticks_per_step);
-  enableTimerInterrupt();
-}
-
-
-void extruder::interrupt()
-{
-    if(!e_speed)
-      return;
-    extrude_step_count++;
-    if(extrude_step_count > 1000)
-    {
-      step();
-      extrude_step_count = 0;
-    }
-}
-#endif
-#endif

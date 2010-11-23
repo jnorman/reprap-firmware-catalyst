@@ -1,15 +1,6 @@
 #ifndef PARAMETERS_H
 #define PARAMETERS_H
 
-// Here are the moterboard codes; set MOTHERBOARD to the right one
-// (Arduino: 0 - no longer in use)
-// Sanguino or RepRap Motherboard with direct drive extruders: 1
-// RepRap Motherboard with RS485 extruders: 2
-// Arduino Mega: 3
-// Arudino Duemilanove w/ ATMega328P: 4
-
-#define MOTHERBOARD 4
-
 // Set 1s where you have endstops; 0s where you don't
 #define ENDSTOPS_MIN_ENABLED 1
 #define ENDSTOPS_MAX_ENABLED 0
@@ -33,20 +24,20 @@
 #define INCHES_TO_MM 25.4
 
 // define the parameters of our machine.
-#define X_STEPS_PER_MM   160
+#define X_STEPS_PER_MM   320
 #define X_STEPS_PER_INCH (X_STEPS_PER_MM*INCHES_TO_MM)
-#define X_MOTOR_STEPS    200
-#define INVERT_X_DIR 1
+#define X_MOTOR_STEPS    400
+#define INVERT_X_DIR 0
 
-#define Y_STEPS_PER_MM   160
+#define Y_STEPS_PER_MM   320
 #define Y_STEPS_PER_INCH (Y_STEPS_PER_MM*INCHES_TO_MM)
-#define Y_MOTOR_STEPS    200
-#define INVERT_Y_DIR 1
+#define Y_MOTOR_STEPS    400
+#define INVERT_Y_DIR 0
 
-#define Z_STEPS_PER_MM   160 // about 200 steps per revoloution / 1.25 mm thread pitch
+#define Z_STEPS_PER_MM   320 // about 200 steps per revoloution / 1.25 mm thread pitch
 #define Z_STEPS_PER_INCH (Z_STEPS_PER_MM*INCHES_TO_MM)
-#define Z_MOTOR_STEPS    200
-#define INVERT_Z_DIR 1
+#define Z_MOTOR_STEPS    400
+#define INVERT_Z_DIR 0
 
 // For when we have a stepper-driven extruder
 // E_STEPS_PER_MM is the number of steps needed to 
@@ -57,14 +48,14 @@
 #define E_MOTOR_STEPS    400 //half-step
 
 //our maximum feedrates
-#define FAST_XY_FEEDRATE 300.0
+#define FAST_XY_FEEDRATE 360.0
 #define FAST_Z_FEEDRATE  50.0
 
 // Data for acceleration calculations
 // Comment out the next line to turn accelerations off
 #define ACCELERATION_ON
-#define SLOW_XY_FEEDRATE 100.0 // Speed from which to start accelerating
-#define SLOW_Z_FEEDRATE 15
+#define SLOW_XY_FEEDRATE 15.0 // Speed from which to start accelerating
+#define SLOW_Z_FEEDRATE 5.0
 
 // Set to 1 if enable pins are inverting
 // For RepRap stepper boards version 1.x the enable pins are *not* inverting.
@@ -80,6 +71,22 @@
 // Set to one if sensor outputs inverting (ie: 1 means open, 0 means closed)
 // RepRap opto endstops are *not* inverting.
 #define ENDSTOPS_INVERTING 1
+
+// The number of mm below which distances are insignificant (one tenth the
+// resolution of the machine is the default value).
+
+#define SMALL_DISTANCE 0.01
+
+// Useful to have its square
+
+#define SMALL_DISTANCE2 (SMALL_DISTANCE*SMALL_DISTANCE)
+
+// The number of 5-second intervals to wait at the target temperature for things to stabilise.
+// Too short, and the extruder will jam as only part of it will be hot enough.
+// Too long and the melt will extend too far up the insulating tube.
+// Default value: 10
+
+#define WAIT_AT_TEMPERATURE 10
 
 // Inline interrupt control functions
 

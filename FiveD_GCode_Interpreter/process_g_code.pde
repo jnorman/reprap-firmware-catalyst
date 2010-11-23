@@ -88,6 +88,42 @@ inline void specialMoveZ(const float& z, const float& feed)
   qMove(sp);
 }
 
+void zeroX()
+{
+  where_i_am.f = SLOW_XY_FEEDRATE;
+  specialMoveX(where_i_am.x - 5, FAST_XY_FEEDRATE);
+  specialMoveX(where_i_am.x - 250, FAST_XY_FEEDRATE);
+  where_i_am.x = 0;
+  where_i_am.f = SLOW_XY_FEEDRATE;
+  specialMoveX(where_i_am.x + 1, SLOW_XY_FEEDRATE);
+  specialMoveX(where_i_am.x - 10, SLOW_XY_FEEDRATE);                                
+  where_i_am.x = 0;  
+}
+
+void zeroY()
+{
+  specialMoveY(where_i_am.y - 5, FAST_XY_FEEDRATE);
+  specialMoveY(where_i_am.y - 250, FAST_XY_FEEDRATE);
+  where_i_am.y = 0;
+  where_i_am.f = SLOW_XY_FEEDRATE;
+  specialMoveY(where_i_am.y + 1, SLOW_XY_FEEDRATE);
+  specialMoveY(where_i_am.y - 10, SLOW_XY_FEEDRATE);                                
+  where_i_am.y = 0; 
+   
+}
+
+void zeroZ()
+{
+  where_i_am.f = SLOW_Z_FEEDRATE;
+  specialMoveZ(where_i_am.z - 0.5, FAST_Z_FEEDRATE);
+  specialMoveZ(where_i_am.z - 250, FAST_Z_FEEDRATE);
+  where_i_am.z = 0;
+  where_i_am.f = SLOW_Z_FEEDRATE;
+  specialMoveZ(where_i_am.z + 1, SLOW_Z_FEEDRATE);
+  specialMoveZ(where_i_am.z - 2, SLOW_Z_FEEDRATE);                                
+  where_i_am.z = 0;  
+}
+
 //our feedrate variables.
 //float feedrate = SLOW_XY_FEEDRATE;
 
@@ -223,6 +259,7 @@ bool process_string(char instruction[], int size)
 		return false;
 
         float fr;
+        bool axisSelected;
         
 	fp.x = 0.0;
 	fp.y = 0.0;
@@ -296,31 +333,28 @@ bool process_string(char instruction[], int size)
                                 
                         //go home.
 			case 28:
-                                where_i_am.f = SLOW_XY_FEEDRATE;
-                                specialMoveX(where_i_am.x - 5, FAST_XY_FEEDRATE);
-                                specialMoveX(where_i_am.x - 250, FAST_XY_FEEDRATE);
-                                where_i_am.x = 0;
-                                where_i_am.f = SLOW_XY_FEEDRATE;
-                                specialMoveX(where_i_am.x + 1, SLOW_XY_FEEDRATE);
-                                specialMoveX(where_i_am.x - 10, SLOW_XY_FEEDRATE);                                
-                                where_i_am.x = 0;
-                                
-                                specialMoveY(where_i_am.y - 5, FAST_XY_FEEDRATE);
-                                specialMoveY(where_i_am.y - 250, FAST_XY_FEEDRATE);
-                                where_i_am.y = 0;
-                                where_i_am.f = SLOW_XY_FEEDRATE;
-                                specialMoveY(where_i_am.y + 1, SLOW_XY_FEEDRATE);
-                                specialMoveY(where_i_am.y - 10, SLOW_XY_FEEDRATE);                                
-                                where_i_am.y = 0; 
- 
-                                where_i_am.f = SLOW_Z_FEEDRATE;
-                                specialMoveZ(where_i_am.z - 0.5, FAST_Z_FEEDRATE);
-                                specialMoveZ(where_i_am.z - 250, FAST_Z_FEEDRATE);
-                                where_i_am.z = 0;
-                                where_i_am.f = SLOW_Z_FEEDRATE;
-                                specialMoveZ(where_i_am.z + 1, SLOW_Z_FEEDRATE);
-                                specialMoveZ(where_i_am.z - 2, SLOW_Z_FEEDRATE);                                
-                                where_i_am.z = 0;
+                                axisSelected = false;
+                                if(gc.seen & GCODE_X)
+                                {
+                                  zeroX();
+                                  axisSelected = true;
+                                }
+                                if(gc.seen & GCODE_Y)
+                                {
+                                  zeroY();
+                                  axisSelected = true;
+                                }                                
+                                if(gc.seen & GCODE_Z)
+                                {
+                                  zeroZ();
+                                  axisSelected = true;
+                                }
+                                if(!axisSelected)
+                                {
+                                  zeroX();
+                                  zeroY();
+                                  zeroZ();
+                                }
                                 where_i_am.f = SLOW_XY_FEEDRATE;     // Most sensible feedrate to leave it in                    
 
 				return true;
@@ -406,13 +440,13 @@ bool process_string(char instruction[], int size)
 
 			//turn extruder on, forward
 			case 101:
-				ex[extruder_in_use]->set_direction(1);
+				ex[extruder_in_use]->set_direction(0);
 				//ex[extruder_in_use]->set_speed(extruder_speed);
 				break;
 
 			//turn extruder on, reverse
 			case 102:
-				ex[extruder_in_use]->set_direction(0);
+				ex[extruder_in_use]->set_direction(1);
 				//ex[extruder_in_use]->set_speed(extruder_speed);
 				break;
 
@@ -433,12 +467,7 @@ bool process_string(char instruction[], int size)
 			case 105:
 				Serial.print("T:");
 				Serial.println(ex[extruder_in_use]->get_temperature());
-				return false;
-
-                        //custom code to wait until temperature is reached
-                        case 111:
-                                ex[extruder_in_use]->wait_for_temperature();
-                                break;
+				break;
 
 			//turn fan on
 			case 106:
@@ -464,11 +493,41 @@ bool process_string(char instruction[], int size)
 					ex[extruder_in_use]->set_target_temperature((int)gc.S);
 				}
 				break;
-			
- 			case 140: // Base plate heater on/off 
- 				if (gc.seen & GCODE_S)
- 				  digitalWrite(BASE_HEATER_PIN, gc.S != 0);
- 				break;
+			case 110:
+                                //set current line number
+                                break;
+                                
+                        //custom code to wait until temperature is reached
+                        /*case 111:
+                                ex[extruder_in_use]->wait_for_temperature();
+                                break;
+*/
+                        case 111:
+                                //set Debug Level
+                                //M111 S6 -set debug to level 6
+                                break;
+                        case 112:
+                                //emergency stop
+                                break;
+                        case 113:
+                                //stop extruder
+                                extruder_speed = 0;
+                                break;
+                        case 114:
+                                //Get current position
+                                break;
+                        case 115:
+                                //Get firmware version and capabilities
+                                break;
+                        case 116:
+                                //Wait for all temperatures and other slowly-changing variables to arrive at their set values
+                                //see also deprecated M111
+                                ex[extruder_in_use]->wait_for_temperature();
+                                break;
+                        case 117:
+                                //get Zero position in steps
+                                break;
+                                
 
 // The valve (real, or virtual...) is now the way to control any extruder (such as
 // a pressurised paste extruder) that cannot move using E codes.
@@ -482,7 +541,34 @@ bool process_string(char instruction[], int size)
                         case 127:
                                 ex[extruder_in_use]->valve_set(false, (int)(gc.P + 0.5));
                                 break;
-                                                                
+                                
+ 			case 140: // Base plate heater on/off 
+ 				/*if (gc.seen & GCODE_S)
+ 				  digitalWrite(BASE_HEATER_PIN, gc.S != 0);*/
+                                Serial.println("what base hearter?");
+ 				break;
+                        case 141:
+                                 //chamer temperature
+                                 break;
+                        case 142:
+                                 //holding pressure... 
+                                 break;
+                        case 226:
+                                 //Gcode initiated pause
+                                 break;
+                        case 227:
+                                 //enable automatic reverse and prime
+                                 break;
+                        case 228:
+                                 //disable automatic reverse and prime
+                                 break;
+                        case 229:
+                                 //enable automatic reverse and prime
+                                 break;
+                        case 230:
+                                 //disable / enable wait for temperature change
+                                 break;
+                         
 
 			default:
 				Serial.print("[FIRMWARE WARNING] invalid M-Code received: M");

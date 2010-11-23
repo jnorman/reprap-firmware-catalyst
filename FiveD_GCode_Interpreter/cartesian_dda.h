@@ -86,37 +86,23 @@ public:
   cartesian_dda();
   
   // Set where I'm going
-  
   void set_target(const FloatPoint& p);
   
   // Start the DDA
-  
   void dda_start();
   
   // Do one step of the DDA
-  
   void dda_step();
   
   // Are we running at the moment?
-  
   bool active();
   
   // True for mm; false for inches
-  
   void set_units(bool using_mm);
-  
-  // Record the selection of a new extruder
-  
-  //void set_extruder(extruder* ex);
+
 };
 
 // Short functions inline to save memory; particularly useful in the Arduino
-
-
-//inline void cartesian_dda::set_extruder(extruder* ex)
-//{
-//  ext = ex;
-//}
 
 inline bool cartesian_dda::active()
 {
