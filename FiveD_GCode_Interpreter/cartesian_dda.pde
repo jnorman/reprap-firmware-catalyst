@@ -16,11 +16,11 @@ cartesian_dda::cartesian_dda()
         
   // Default is going forward
   
-        x_direction = 1;
-        y_direction = 1;
-        z_direction = 1;
-        e_direction = 1;
-        f_direction = 1;
+        x_direction = true;
+        y_direction = true;
+        z_direction = true;
+        e_direction = true;
+        f_direction = true;
         
   // Default to the origin and not going anywhere
   
@@ -41,7 +41,7 @@ cartesian_dda::cartesian_dda()
 	pinMode(Z_STEP_PIN, OUTPUT);
 	pinMode(Z_DIR_PIN, OUTPUT);
 
-
+        //remove later
 	pinMode(X_ENABLE_PIN, OUTPUT);
 	pinMode(Y_ENABLE_PIN, OUTPUT);
 	pinMode(Z_ENABLE_PIN, OUTPUT);
@@ -189,11 +189,11 @@ void cartesian_dda::dda_step()
    
   do
   {
-		x_can_step = can_step(X_MIN_PIN, X_MAX_PIN, current_steps.x, target_steps.x, x_direction);
-		y_can_step = can_step(Y_MIN_PIN, Y_MAX_PIN, current_steps.y, target_steps.y, y_direction);
-		z_can_step = can_step(Z_MIN_PIN, Z_MAX_PIN, current_steps.z, target_steps.z, z_direction);
-                e_can_step = can_step(-1, -1, current_steps.e, target_steps.e, e_direction);
-                f_can_step = can_step(-1, -1, current_steps.f, target_steps.f, f_direction);
+		x_can_step = xCanStep(current_steps.x, target_steps.x, x_direction);
+		y_can_step = yCanStep(current_steps.y, target_steps.y, y_direction);
+		z_can_step = zCanStep(current_steps.z, target_steps.z, z_direction);
+                e_can_step = eCanStep(current_steps.e, target_steps.e, e_direction);
+                f_can_step = fCanStep(current_steps.f, target_steps.f, f_direction);
                 
                 real_move = false;
                 
@@ -316,23 +316,39 @@ void cartesian_dda::dda_start()
     return;
     
   	//set our direction pins as well
+
+  byte d = 1;
+  	
 #if INVERT_X_DIR == 1
-	digitalWrite(X_DIR_PIN, !x_direction);
+  if(x_direction)
+    d = 0;
 #else
-	digitalWrite(X_DIR_PIN, x_direction);
+  if(!x_direction)
+    d = 0;	
 #endif
-
+  digitalWrite(X_DIR_PIN, d);
+        
+  d = 1;
+    
 #if INVERT_Y_DIR == 1
-	digitalWrite(Y_DIR_PIN, !y_direction);
+  if(y_direction)
+    d = 0;
 #else
-	digitalWrite(Y_DIR_PIN, y_direction);
+  if(!y_direction)
+    d = 0;	
 #endif
-
+  digitalWrite(Y_DIR_PIN, d);
+        
+  d = 1;
+    
 #if INVERT_Z_DIR == 1
-	digitalWrite(Z_DIR_PIN, !z_direction);
+  if(z_direction)
+     d = 0;
 #else
-	digitalWrite(Z_DIR_PIN, z_direction);
+  if(!z_direction)
+     d = 0;	
 #endif
+  digitalWrite(Z_DIR_PIN, d);
         if(e_direction)
           ex[extruder_in_use]->set_direction(EXTRUDER_FORWARD);
         else
@@ -340,66 +356,13 @@ void cartesian_dda::dda_start()
   
     //turn on steppers to start moving =)
     
-	enable_steppers();
+	//enable_steppers();
         
        // extcount = 0;
 
         setTimer(DEFAULT_TICK);
 	live = true;
 }
-
-
-bool cartesian_dda::can_step(byte min_pin, byte max_pin, long current, long target, byte dir)
-{
-
-  //stop us if we're on target
-
-	if (target == current){
-		return false;
-        } 
-
-#if ENDSTOPS_MIN_ENABLED == 1
-
-  //stop us if we're home and still going
-  
-	if(!dir && min_pin >= 0)
-        {
-          if (read_switch(min_pin))
-		return false;
-        }
-#endif
-
-#if ENDSTOPS_MAX_ENABLED == 1
-
-  //stop us if we're at max and still going
-  
-	if(dir && max_pin >= 0)
-        {
- 	    if (read_switch(max_pin))
- 		return false;
-        }
-#endif
-
-  // All OK - we can step
-  
-	return true;
-}
-
-
-void cartesian_dda::enable_steppers()
-{
-
- if(delta_steps.x)
-    digitalWrite(X_ENABLE_PIN, ENABLE_ON);
-  if(delta_steps.y)    
-    digitalWrite(Y_ENABLE_PIN, ENABLE_ON);
-  if(delta_steps.z)
-    digitalWrite(Z_ENABLE_PIN, ENABLE_ON);
-  if(delta_steps.e)
-    ex[extruder_in_use]->enableStep();
- 
-}
-
 
 
 void cartesian_dda::disable_steppers()

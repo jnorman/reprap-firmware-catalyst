@@ -29,9 +29,9 @@
 #define X_MOTOR_STEPS    400
 #define INVERT_X_DIR 0
 
-#define Y_STEPS_PER_MM   320
+#define Y_STEPS_PER_MM   32
 #define Y_STEPS_PER_INCH (Y_STEPS_PER_MM*INCHES_TO_MM)
-#define Y_MOTOR_STEPS    400
+#define Y_MOTOR_STEPS    1600
 #define INVERT_Y_DIR 0
 
 #define Z_STEPS_PER_MM   320 // about 200 steps per revoloution / 1.25 mm thread pitch
@@ -48,7 +48,7 @@
 #define E_MOTOR_STEPS    400 //half-step
 
 //our maximum feedrates
-#define FAST_XY_FEEDRATE 360.0
+#define FAST_XY_FEEDRATE 500.0
 #define FAST_Z_FEEDRATE  50.0
 
 // Data for acceleration calculations
