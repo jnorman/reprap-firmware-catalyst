@@ -70,7 +70,10 @@
 
 // Set to one if sensor outputs inverting (ie: 1 means open, 0 means closed)
 // RepRap opto endstops are *not* inverting.
-#define ENDSTOPS_INVERTING 1
+//#define ENDSTOPS_INVERTING 1
+#define X_ENDSTOP_INVERTING true
+#define Y_ENDSTOP_INVERTING true
+#define Z_ENDSTOP_INVERTING true
 
 // The number of mm below which distances are insignificant (one tenth the
 // resolution of the machine is the default value).
