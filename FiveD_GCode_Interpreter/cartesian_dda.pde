@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "parameters.h"
+#include "configuration.h"
 #include "pins.h"
 #include "extruder.h"
 #include "vectors.h"

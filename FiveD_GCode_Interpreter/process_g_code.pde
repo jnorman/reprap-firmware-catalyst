@@ -1,5 +1,5 @@
 
-#include "parameters.h"
+#include "configuration.h"
 #include "pins.h"
 #include "extruder.h"
 #include "vectors.h"
@@ -545,10 +545,10 @@ bool process_string(char instruction[], int size)
  			case 140: // Base plate heater on/off 
  				/*if (gc.seen & GCODE_S)
  				  digitalWrite(BASE_HEATER_PIN, gc.S != 0);*/
-                                Serial.println("what base hearter?");
+                                Serial.println("what base heater?");
  				break;
                         case 141:
-                                 //chamer temperature
+                                 //chamber temperature
                                  break;
                         case 142:
                                  //holding pressure... 

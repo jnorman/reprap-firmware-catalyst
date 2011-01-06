@@ -20,21 +20,21 @@
 // What delay() value to use when waiting for things to free up in milliseconds
 
 #define WAITING_DELAY 1
-
+#define BAUD_RATE 57600
 #define INCHES_TO_MM 25.4
 
 // define the parameters of our machine.
-#define X_STEPS_PER_MM   320
+#define X_STEPS_PER_MM   314.960629921 //unnecessarily accurate?
 #define X_STEPS_PER_INCH (X_STEPS_PER_MM*INCHES_TO_MM)
 #define X_MOTOR_STEPS    400
 #define INVERT_X_DIR 0
 
-#define Y_STEPS_PER_MM   32
+#define Y_STEPS_PER_MM   40.764914893//41.417153531
 #define Y_STEPS_PER_INCH (Y_STEPS_PER_MM*INCHES_TO_MM)
 #define Y_MOTOR_STEPS    1600
 #define INVERT_Y_DIR 0
 
-#define Z_STEPS_PER_MM   320 // about 200 steps per revoloution / 1.25 mm thread pitch
+#define Z_STEPS_PER_MM   320 //314.960629921
 #define Z_STEPS_PER_INCH (Z_STEPS_PER_MM*INCHES_TO_MM)
 #define Z_MOTOR_STEPS    400
 #define INVERT_Z_DIR 0
@@ -54,8 +54,8 @@
 // Data for acceleration calculations
 // Comment out the next line to turn accelerations off
 #define ACCELERATION_ON
-#define SLOW_XY_FEEDRATE 15.0 // Speed from which to start accelerating
-#define SLOW_Z_FEEDRATE 5.0
+#define SLOW_XY_FEEDRATE 50.0 // Speed from which to start accelerating
+#define SLOW_Z_FEEDRATE 15.0
 
 // Set to 1 if enable pins are inverting
 // For RepRap stepper boards version 1.x the enable pins are *not* inverting.
@@ -70,7 +70,6 @@
 
 // Set to one if sensor outputs inverting (ie: 1 means open, 0 means closed)
 // RepRap opto endstops are *not* inverting.
-//#define ENDSTOPS_INVERTING 1
 #define X_ENDSTOP_INVERTING true
 #define Y_ENDSTOP_INVERTING true
 #define Z_ENDSTOP_INVERTING true
@@ -90,6 +89,10 @@
 // Default value: 10
 
 #define WAIT_AT_TEMPERATURE 10
+
+//PWM heater settings 0 - 255
+#define HEATER_HIGH 255
+#define HEATER_LOW 64
 
 // Inline interrupt control functions
 

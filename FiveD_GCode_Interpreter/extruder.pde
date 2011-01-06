@@ -1,7 +1,7 @@
 
-#include "parameters.h"
+#include "configuration.h"
 #include "pins.h"
-#include "ThermistorTable.h"
+#include "Temperature.h"
 #include "extruder.h" 
 
 // Keep all extruders up to temperature etc.
@@ -81,8 +81,8 @@ extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin,
         e_speed = 0;
         target_celsius = 0;
         max_celsius = 0;
-        heater_low = 64;
-        heater_high = 255;
+        heater_low = HEATER_LOW;
+        heater_high = HEATER_HIGH;
         heater_current = 0;
         valve_open = false;
         

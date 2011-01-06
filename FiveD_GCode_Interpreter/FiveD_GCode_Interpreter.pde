@@ -19,7 +19,7 @@ more readable
 #include <HardwareSerial.h>
 #include "WProgram.h"
 #include "vectors.h"
-#include "parameters.h"
+#include "configuration.h"
 #include "pins.h"
 #include "extruder.h"
 #include "cartesian_dda.h"
@@ -94,7 +94,7 @@ void setup()
   where_i_am.e = 0.0;
   where_i_am.f = SLOW_XY_FEEDRATE;
   
-  Serial.begin(19200);
+  Serial.begin(BAUD_RATE);
   Serial.println("start");
   
   setTimer(DEFAULT_TICK);
