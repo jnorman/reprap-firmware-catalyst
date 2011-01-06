@@ -528,20 +528,6 @@ bool process_string(char instruction[], int size)
                                 //get Zero position in steps
                                 break;
                                 
-
-// The valve (real, or virtual...) is now the way to control any extruder (such as
-// a pressurised paste extruder) that cannot move using E codes.
-
-                        // Open the valve
-                        case 126:
-                                ex[extruder_in_use]->valve_set(true, (int)(gc.P + 0.5));
-                                break;
-                                
-                        // Close the valve
-                        case 127:
-                                ex[extruder_in_use]->valve_set(false, (int)(gc.P + 0.5));
-                                break;
-                                
  			case 140: // Base plate heater on/off 
  				/*if (gc.seen & GCODE_S)
  				  digitalWrite(BASE_HEATER_PIN, gc.S != 0);*/

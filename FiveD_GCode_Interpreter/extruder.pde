@@ -36,15 +36,13 @@ it are simple inlines in extruder.h
 Otherwise, we have to do the work ourselves...
 */
 
-extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin, byte vd_pin, byte ve_pin, signed int se_pin)
+extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin, signed int se_pin)
 {
          motor_dir_pin = md_pin;
          motor_speed_pin = ms_pin;
          heater_pin = h_pin;
          fan_pin = f_pin;
          temp_pin = t_pin;
-         valve_dir_pin = vd_pin;
-         valve_en_pin = ve_pin;
          step_en_pin = se_pin;
          
 	//setup our pins
@@ -53,16 +51,12 @@ extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin,
 	pinMode(heater_pin, OUTPUT);
 
 	pinMode(temp_pin, INPUT);
-	pinMode(valve_dir_pin, OUTPUT); 
-        pinMode(valve_en_pin, OUTPUT);
 
 	//initialize values
 	digitalWrite(motor_dir_pin, 1);
 	
 	analogWrite(heater_pin, 0);
 	analogWrite(motor_speed_pin, 0);
-	digitalWrite(valve_dir_pin, false);
-	digitalWrite(valve_en_pin, 0);
 
 // The step enable pin and the fan pin are the same...
 // We can have one, or the other, but not both
@@ -84,7 +78,6 @@ extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin,
         heater_low = HEATER_LOW;
         heater_high = HEATER_HIGH;
         heater_current = 0;
-        valve_open = false;
         
 //this is for doing encoder based extruder control
 //        rpm = 0;
@@ -189,19 +182,6 @@ byte extruder::wait_till_cool()
   return 0;
 }
 */
-
-
-
-void extruder::valve_set(bool open, int dTime)
-{
-        wait_for_temperature();
-	valve_open = open;
-	digitalWrite(valve_dir_pin, open);
-        digitalWrite(valve_en_pin, 1);
-        delay(dTime);
-        digitalWrite(valve_en_pin, 0);
-}
-
 
 void extruder::set_target_temperature(int temp)
 {

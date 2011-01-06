@@ -29,10 +29,8 @@
 #define EXTRUDER_0_HEATER_PIN        (byte)13
 #define EXTRUDER_0_FAN_PIN           (byte)-1
 #define EXTRUDER_0_TEMPERATURE_PIN  (byte)0   // Analogue input
-#define EXTRUDER_0_VALVE_DIR_PIN     (byte)-1
-#define EXTRUDER_0_VALVE_ENABLE_PIN  (byte)-1  // Valve needs to be redesigned not to need this
 #define EXTRUDER_0_STEP_ENABLE_PIN  (byte)12  // was set to 11... crap, probably have to fix this
-
+/*
 #define EXTRUDER_1_MOTOR_SPEED_PIN   (byte)-1
 #define EXTRUDER_1_MOTOR_DIR_PIN    (byte)-1
 #define EXTRUDER_1_HEATER_PIN        (byte)-1
@@ -40,7 +38,7 @@
 #define EXTRUDER_1_TEMPERATURE_PIN  (byte)-1  // Analogue input
 #define EXTRUDER_1_VALVE_DIR_PIN    (byte)-1
 #define EXTRUDER_1_VALVE_ENABLE_PIN (byte)-1   // Valve needs to be redesigned not to need this 
-#define EXTRUDER_1_STEP_ENABLE_PIN  (byte)-1  // 7 - Conflicts with the fan; set -ve if no stepper
+#define EXTRUDER_1_STEP_ENABLE_PIN  (byte)-1  // 7 - Conflicts with the fan; set -ve if no stepper*/
 
 
 #endif
