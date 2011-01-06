@@ -12,9 +12,6 @@ void manage_all_extruders();
 
 void new_extruder(byte e);
 
-#define EXTRUDER_FORWARD true
-#define EXTRUDER_REVERSE true
-
 class extruder
 {
 private:

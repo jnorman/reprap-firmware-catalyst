@@ -57,7 +57,7 @@ extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin,
         pinMode(valve_en_pin, OUTPUT);
 
 	//initialize values
-	digitalWrite(motor_dir_pin, EXTRUDER_FORWARD);
+	digitalWrite(motor_dir_pin, 1);
 	
 	analogWrite(heater_pin, 0);
 	analogWrite(motor_speed_pin, 0);
@@ -92,7 +92,7 @@ extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin,
 //        error = 0;
 //        last_extruder_error = 0;
 //        error_delta = 0;
-        e_direction = EXTRUDER_FORWARD;
+//        e_direction = EXTRUDER_FORWARD;
         
         //default to cool
         set_target_temperature(target_celsius);
