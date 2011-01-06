@@ -26,14 +26,14 @@ more readable
 
 // Maintain a list of extruders...
 
-extruder* ex[EXTRUDER_COUNT];
+extruder* ex[1];
 byte extruder_in_use = 0;
 
 // Text placed in this (terminated with 0) will be transmitted back to the host
 // along with the next G Code acknowledgement.
 char debugstring[10];
 
-static extruder ex0(EXTRUDER_0_MOTOR_DIR_PIN, EXTRUDER_0_MOTOR_SPEED_PIN , EXTRUDER_0_HEATER_PIN,
+static extruder ex0(EXTRUDER_0_MOTOR_DIR_PIN, EXTRUDER_0_MOTOR_STEP_PIN , EXTRUDER_0_HEATER_PIN,
             EXTRUDER_0_FAN_PIN,  EXTRUDER_0_TEMPERATURE_PIN, EXTRUDER_0_STEP_ENABLE_PIN);
 
 

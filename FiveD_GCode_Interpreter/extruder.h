@@ -6,11 +6,11 @@
 #ifndef EXTRUDER_H
 #define EXTRUDER_H
 
-#define EXTRUDER_COUNT 1
+//#define EXTRUDER_COUNT 1
 
 void manage_all_extruders();
 
-void new_extruder(byte e);
+//void new_extruder(byte e);
 
 class extruder
 {
@@ -32,7 +32,7 @@ private:
     bool e_direction;
 
 // The pins we control
-    byte motor_dir_pin, motor_speed_pin, heater_pin, fan_pin, temp_pin;
+    byte motor_dir_pin, motor_step_pin, heater_pin, fan_pin, temp_pin;
     signed int step_en_pin;
     
      byte wait_till_hot();
@@ -78,9 +78,9 @@ inline void extruder::disableStep()
 
 inline void extruder::step()
 {
-   digitalWrite(motor_speed_pin, HIGH);
+   digitalWrite(motor_step_pin, HIGH);
    delayMicroseconds(5);
-   digitalWrite(motor_speed_pin, LOW);
+   digitalWrite(motor_step_pin, LOW);
 }
 
 inline void extruder::temperature_error()

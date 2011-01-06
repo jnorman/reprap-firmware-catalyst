@@ -8,13 +8,13 @@
 
 void manage_all_extruders()
 {
-    for(byte i = 0; i < EXTRUDER_COUNT; i++)
-       ex[i]->manage();
+    //for(byte i = 0; i < EXTRUDER_COUNT; i++)
+       ex[0]->manage();
 }
 
 // Select a new extruder
 
-void new_extruder(byte e)
+/*void new_extruder(byte e)
 {
   if(e < 0)
     e = 0;
@@ -26,7 +26,7 @@ void new_extruder(byte e)
     extruder_in_use = e;
     //setExtruder();
   }
-}
+}*/
 
 /***************************************************************************************************************************
 
@@ -39,7 +39,7 @@ Otherwise, we have to do the work ourselves...
 extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin, signed int se_pin)
 {
          motor_dir_pin = md_pin;
-         motor_speed_pin = ms_pin;
+         motor_step_pin = ms_pin;
          heater_pin = h_pin;
          fan_pin = f_pin;
          temp_pin = t_pin;
@@ -47,7 +47,7 @@ extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin,
          
 	//setup our pins
 	pinMode(motor_dir_pin, OUTPUT);
-	pinMode(motor_speed_pin, OUTPUT);
+	pinMode(motor_step_pin, OUTPUT);
 	pinMode(heater_pin, OUTPUT);
 
 	pinMode(temp_pin, INPUT);
@@ -56,7 +56,7 @@ extruder::extruder(byte md_pin, byte ms_pin, byte h_pin, byte f_pin, byte t_pin,
 	digitalWrite(motor_dir_pin, 1);
 	
 	analogWrite(heater_pin, 0);
-	analogWrite(motor_speed_pin, 0);
+	analogWrite(motor_step_pin, 0);
 
 // The step enable pin and the fan pin are the same...
 // We can have one, or the other, but not both

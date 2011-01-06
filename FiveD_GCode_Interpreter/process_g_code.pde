@@ -569,9 +569,9 @@ bool process_string(char instruction[], int size)
                 
         if (gc.seen & GCODE_T)
         {
-            while(!qEmpty()) delay(WAITING_DELAY);
+           /* while(!qEmpty()) delay(WAITING_DELAY);
             new_extruder(gc.T);
-            return false;
+            return false;*/
         }
         
         return true;
